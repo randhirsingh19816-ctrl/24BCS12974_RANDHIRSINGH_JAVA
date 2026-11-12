@@ -102,10 +102,10 @@ Content-Type: application/json
 
 ```json
 {
-  "name": "Rahul",
-  "email": "rahul@gmail.com",
+  "name": "Randhir Singh",
+  "email": "randhir@gmail.com",
   "course": "CSE",
-  "age": 21
+  "age": 20
 }
 ```
 
@@ -114,10 +114,10 @@ Example response (`201 Created`):
 ```json
 {
   "id": 1,
-  "name": "Rahul",
-  "email": "rahul@gmail.com",
+  "name": "Randhir Singh",
+  "email": "randhir@gmail.com",
   "course": "CSE",
-  "age": 21
+  "age": 20
 }
 ```
 
