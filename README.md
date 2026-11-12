@@ -130,10 +130,10 @@ Content-Type: application/json
 
 ```json
 {
-  "name": "Rahul Sharma",
-  "email": "rahul@gmail.com",
+  "name": "Randhir",
+  "email": "randhirsingh@gmail.com",
   "course": "AIML",
-  "age": 22
+  "age": 20
 }
 ```
 
