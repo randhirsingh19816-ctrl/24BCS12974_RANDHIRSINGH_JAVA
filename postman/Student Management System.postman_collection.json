@@ -1,0 +1,333 @@
+{
+  "info": {
+    "_postman_id": "46c7c25a-a204-4a2d-b52b-9ea725914dd5",
+    "name": "Student Management System",
+    "description": "CRUD, course lookup, and validation/error scenarios for the Student Management API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api/students"
+    },
+    {
+      "key": "studentId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Create student",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Rahul\",\n  \"email\": \"rahul@gmail.com\",\n  \"course\": \"CSE\",\n  \"age\": 21\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}",
+          "host": [
+            "{{baseUrl}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Created with HTTP 201', function () { pm.response.to.have.status(201); });",
+              "pm.test('Response includes student fields', function () {",
+              "  const student = pm.response.json();",
+              "  pm.expect(student.id).to.exist;",
+              "  pm.expect(student.email).to.eql('rahul@gmail.com');",
+              "  pm.collectionVariables.set('studentId', student.id);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get all students",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}",
+          "host": [
+            "{{baseUrl}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Returns HTTP 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Response is a student array', function () { pm.expect(pm.response.json()).to.be.an('array'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get student by ID",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/{{studentId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "{{studentId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Returns HTTP 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Response ID matches requested student', function () { pm.expect(pm.response.json().id).to.eql(Number(pm.collectionVariables.get('studentId'))); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update student",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Rahul Sharma\",\n  \"email\": \"rahul@gmail.com\",\n  \"course\": \"AIML\",\n  \"age\": 22\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/{{studentId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "{{studentId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Updated with HTTP 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Updated values are returned', function () {",
+              "  const student = pm.response.json();",
+              "  pm.expect(student.name).to.eql('Rahul Sharma');",
+              "  pm.expect(student.course).to.eql('AIML');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get students by course",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/course/AIML",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "course",
+            "AIML"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Returns HTTP 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Each result matches the course', function () { pm.response.json().forEach(function (student) { pm.expect(student.course.toLowerCase()).to.eql('aiml'); }); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Duplicate email returns conflict",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Duplicate Student\",\n  \"email\": \"rahul@gmail.com\",\n  \"course\": \"CSE\",\n  \"age\": 20\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}",
+          "host": [
+            "{{baseUrl}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Duplicate email returns HTTP 409', function () { pm.response.to.have.status(409); });",
+              "pm.test('Error response has message and status', function () {",
+              "  const error = pm.response.json();",
+              "  pm.expect(error.message).to.be.a('string');",
+              "  pm.expect(error.status).to.eql(409);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Invalid input returns bad request",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"\",\n  \"email\": \"not-an-email\",\n  \"course\": \"CSE\",\n  \"age\": 0\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}",
+          "host": [
+            "{{baseUrl}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Invalid body returns HTTP 400', function () { pm.response.to.have.status(400); });",
+              "pm.test('Error response has message and status', function () {",
+              "  const error = pm.response.json();",
+              "  pm.expect(error.message).to.be.a('string');",
+              "  pm.expect(error.status).to.eql(400);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Nonexistent student returns not found",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/2147483647",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "2147483647"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Missing student returns HTTP 404', function () { pm.response.to.have.status(404); });",
+              "pm.test('Error response has message and status', function () {",
+              "  const error = pm.response.json();",
+              "  pm.expect(error.message).to.be.a('string');",
+              "  pm.expect(error.status).to.eql(404);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delete student",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{baseUrl}}/{{studentId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "{{studentId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Deleted with HTTP 204', function () { pm.response.to.have.status(204); });",
+              "pm.test('Delete has no response body', function () { pm.expect(pm.response.text()).to.eql(''); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
